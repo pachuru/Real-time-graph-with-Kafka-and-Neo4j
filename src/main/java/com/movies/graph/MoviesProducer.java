@@ -25,6 +25,15 @@ public class MoviesProducer {
         this.context = context;
     }
 
+    private Callback producerCallback = (RecordMetadata recordMetadata, Exception e) -> {
+        if (e == null) {
+            System.out.println("Success!");
+            System.out.println(recordMetadata.toString());
+        }else{
+            e.printStackTrace();
+        }
+    };
+
     // TODO: Treat exceptions in a clever way
     public void produce(){
         KafkaProducer<String, AvroMovie> producer = new KafkaProducer<>(this.properties);
@@ -56,14 +65,7 @@ public class MoviesProducer {
         while ((line = csvReader.readNext()) != null) {
             AvroMovie movie = avroMovieBuilder.createAvroMovieFromCSVLine(line);
             ProducerRecord<String, AvroMovie> producerRecord = new ProducerRecord<>(topic, movie);
-            producer.send(producerRecord, (RecordMetadata recordMetadata, Exception e) -> {
-                if (e == null) {
-                    System.out.println("Success!");
-                    System.out.println(recordMetadata.toString());
-                }else{
-                    e.printStackTrace();
-                }
-            });
+            producer.send(producerRecord, producerCallback);
             Thread.sleep(1000);
         }
 
