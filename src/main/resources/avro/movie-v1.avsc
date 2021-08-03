@@ -1,0 +1,18 @@
+{
+    "type": "record",
+    "namespace": "com.movies.graph",
+    "name": "AvroMovie",
+    "version": "1",
+    "fields": [
+        { "name": "id", "type": "int" },
+        { "name": "title", "type": "string" },
+        { "name": "director", "type": "string" },
+        { "name": "cast", "type": "string" },
+        { "name": "country", "type": "string" },
+        { "name": "releaseYear", "type": "int" },
+        { "name": "rating", "type": "double" },
+        { "name": "duration", "type": "double" },
+        { "name": "genres", "type": "string" },
+        { "name": "description", "type": "string" }
+    ]
+}
