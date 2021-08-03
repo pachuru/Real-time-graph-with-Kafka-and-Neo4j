@@ -17,10 +17,10 @@ public class MoviesProducer {
 
     public MoviesProducer(Context context) {
         this.properties = new Properties();
-        this.properties.setProperty("bootstrap.servers", "localhost:29092");
+        this.properties.setProperty("bootstrap.servers", context.getEnvVar("BOOTSTRAP_SERVERS_ADDR"));
         this.properties.setProperty("key.serializer", io.confluent.kafka.serializers.KafkaAvroSerializer.class.getName());
         this.properties.setProperty("value.serializer", io.confluent.kafka.serializers.KafkaAvroSerializer.class.getName());
-        this.properties.setProperty("schema.registry.url", "http://localhost:8085");
+        this.properties.setProperty("schema.registry.url", context.getEnvVar("SCHEMA_REGISTRY_ADDR"));
 
         this.context = context;
     }
@@ -38,8 +38,8 @@ public class MoviesProducer {
     }
 
     public void produceNetflixMovies(KafkaProducer<String, AvroMovie> producer) throws CsvValidationException, IOException, InterruptedException {
-        String topic = "netflix-movies";
-        String csvFileName = "netflix_titles.csv";
+        String topic = this.context.getEnvVar("NETFLIX_TOPIC_NAME");
+        String csvFileName = this.context.getEnvVar("NETFLIX_CSV_FILENAME");
         produceFromCsv(csvFileName, topic, producer);
     }
 
