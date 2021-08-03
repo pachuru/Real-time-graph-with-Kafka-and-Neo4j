@@ -2,7 +2,6 @@ package com.movies.graph;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import io.github.cdimascio.dotenv.Dotenv;
 import org.apache.kafka.clients.producer.*;
 
 import java.io.IOException;
@@ -14,13 +13,16 @@ import java.util.Properties;
 public class MoviesProducer {
 
     Properties properties;
+    Context context;
 
-    public MoviesProducer() {
+    public MoviesProducer(Context context) {
         this.properties = new Properties();
         this.properties.setProperty("bootstrap.servers", "localhost:29092");
         this.properties.setProperty("key.serializer", io.confluent.kafka.serializers.KafkaAvroSerializer.class.getName());
         this.properties.setProperty("value.serializer", io.confluent.kafka.serializers.KafkaAvroSerializer.class.getName());
         this.properties.setProperty("schema.registry.url", "http://localhost:8085");
+
+        this.context = context;
     }
 
     // TODO: Treat exceptions in a clever way
@@ -42,11 +44,9 @@ public class MoviesProducer {
     }
 
     public void produceFromCsv(String fileName, String topic, KafkaProducer<String, AvroMovie> producer) throws IOException, CsvValidationException, InterruptedException {
-        Dotenv dotenv = Dotenv.load();
-
         AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
 
-        Reader reader = Files.newBufferedReader(Paths.get(dotenv.get("DATA_DIR") + "/" + fileName));
+        Reader reader = Files.newBufferedReader(Paths.get(this.context.getEnvVar("DATA_DIR") + "/" + fileName));
         CSVReader csvReader = new CSVReader(reader);
 
         // Skip the header
@@ -72,7 +72,8 @@ public class MoviesProducer {
     }
 
     public static void main(String []args) throws InterruptedException {
-        MoviesProducer moviesProducer = new MoviesProducer();
+        Context context = new Context();
+        MoviesProducer moviesProducer = new MoviesProducer(context);
         moviesProducer.produce();
     }
 }
