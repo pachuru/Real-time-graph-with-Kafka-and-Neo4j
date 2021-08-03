@@ -1,47 +1,78 @@
 package com.movies.graph;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.apache.kafka.clients.producer.*;
-import org.apache.kafka.common.serialization.StringSerializer;
-import io.confluent.kafka.serializers.KafkaAvroSerializer;
 
-import java.util.Map;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class MoviesProducer {
 
-    public static void main(String []args) throws InterruptedException {
+    Properties properties;
 
+    public MoviesProducer() {
+        this.properties = new Properties();
+        this.properties.setProperty("bootstrap.servers", "localhost:29092");
+        this.properties.setProperty("key.serializer", io.confluent.kafka.serializers.KafkaAvroSerializer.class.getName());
+        this.properties.setProperty("value.serializer", io.confluent.kafka.serializers.KafkaAvroSerializer.class.getName());
+        this.properties.setProperty("schema.registry.url", "http://localhost:8085");
+    }
 
-        Properties properties = new Properties();
-        properties.setProperty("bootstrap.servers", "localhost:29092");
-        properties.setProperty("key.serializer", io.confluent.kafka.serializers.KafkaAvroSerializer.class.getName());
-        properties.setProperty("value.serializer", io.confluent.kafka.serializers.KafkaAvroSerializer.class.getName());
-        properties.setProperty("schema.registry.url", "http://localhost:8085"); // ?
+    // TODO: Treat exceptions in a clever way
+    public void produce(){
+        KafkaProducer<String, AvroMovie> producer = new KafkaProducer<>(this.properties);
+        try {
+            produceNetflixMovies(producer);
+        } catch(Exception e) {
+            e.printStackTrace();
+            producer.flush();
+            producer.close();
+        }
+    }
 
-        KafkaProducer<String, AvroMovie> kafkaProducer = new KafkaProducer<>(properties);
+    public void produceNetflixMovies(KafkaProducer<String, AvroMovie> producer) throws CsvValidationException, IOException, InterruptedException {
         String topic = "netflix-movies";
-        AvroMovie movie = AvroMovie.newBuilder()
-                .setId(1)
-                .setTitle("first-movie")
-                .setDirector("first-director")
-                .setCast("first-cast")
-                .setCountry("first-country")
-                .setReleaseYear(1)
-                .setRating(1.0)
-                .setDuration(1.0)
-                .setGenres("first-genres")
-                .setDescription("first-description")
-                .build();
-        ProducerRecord<String, AvroMovie> producerRecord = new ProducerRecord<>(topic, movie);
-        kafkaProducer.send(producerRecord, (RecordMetadata recordMetadata, Exception e) -> {
+        String csvFileName = "netflix_titles.csv";
+        produceFromCsv(csvFileName, topic, producer);
+    }
+
+    public void produceFromCsv(String fileName, String topic, KafkaProducer<String, AvroMovie> producer) throws IOException, CsvValidationException, InterruptedException {
+        Dotenv dotenv = Dotenv.load();
+
+        AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
+
+        Reader reader = Files.newBufferedReader(Paths.get(dotenv.get("DATA_DIR") + "/" + fileName));
+        CSVReader csvReader = new CSVReader(reader);
+
+        // Skip the header
+        csvReader.readNext();
+
+        String[] line;
+        while ((line = csvReader.readNext()) != null) {
+            AvroMovie movie = avroMovieBuilder.createAvroMovieFromCSVLine(line);
+            ProducerRecord<String, AvroMovie> producerRecord = new ProducerRecord<>(topic, movie);
+            producer.send(producerRecord, (RecordMetadata recordMetadata, Exception e) -> {
                 if (e == null) {
                     System.out.println("Success!");
                     System.out.println(recordMetadata.toString());
                 }else{
                     e.printStackTrace();
                 }
-        });
-        kafkaProducer.flush();
-        kafkaProducer.close();
+            });
+            Thread.sleep(1000);
+        }
+
+        reader.close();
+        csvReader.close();
+    }
+
+    public static void main(String []args) throws InterruptedException {
+        MoviesProducer moviesProducer = new MoviesProducer();
+        moviesProducer.produce();
     }
 }
