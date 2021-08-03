@@ -4,13 +4,15 @@
     "name": "AvroMovie",
     "version": "1",
     "fields": [
-        { "name": "id", "type": "int" },
+        { "name": "id", "type": "string" },
+        { "name": "type", "type": "string" },
         { "name": "title", "type": "string" },
         { "name": "director", "type": "string" },
         { "name": "cast", "type": "string" },
         { "name": "country", "type": "string" },
+        { "name": "dateAdded", "type": "string" },
         { "name": "releaseYear", "type": "int" },
-        { "name": "rating", "type": "double" },
+        { "name": "rated", "type": "string" },
         { "name": "duration", "type": "double" },
         { "name": "genres", "type": "string" },
         { "name": "description", "type": "string" }
