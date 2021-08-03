@@ -13,6 +13,13 @@
         <maven.compiler.target>16</maven.compiler.target>
         <junit-jupiter.version>5.7.0</junit-jupiter.version>
         <assertj.version>3.18.1</assertj.version>
+        <kafka-clients.version>2.7.0</kafka-clients.version>
+        <avro.version>1.10.2</avro.version>
+        <kafka-avro-serializer.version>5.3.0</kafka-avro-serializer.version>
+        <open-csv.version>5.5.1</open-csv.version>
+        <java-dotenv.version>5.2.2</java-dotenv.version>
+        <avro-maven-plugin.version>1.10.2</avro-maven-plugin.version>
+        <maven-build-helper.version>3.2.0</maven-build-helper.version>
     </properties>
 
     <repositories>
@@ -27,27 +34,27 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>2.7.0</version>
+            <version>${kafka-clients.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
-            <version>1.10.2</version>
+            <version>${avro.version}</version>
         </dependency>
         <dependency>
             <groupId>io.confluent</groupId>
             <artifactId>kafka-avro-serializer</artifactId>
-            <version>5.3.0</version>
+            <version>${kafka-avro-serializer.version}</version>
         </dependency>
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-            <version>5.5.1</version>
+            <version>${open-csv.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>java-dotenv</artifactId>
-            <version>5.2.2</version>
+            <version>${java-dotenv.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -68,7 +75,7 @@
             <plugin>
                 <groupId>org.apache.avro</groupId>
                 <artifactId>avro-maven-plugin</artifactId>
-                <version>1.10.2</version>
+                <version>${avro-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -98,7 +105,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>${maven-build-helper.version}</version>
                 <executions>
                     <execution>
                         <id>add-source</id>

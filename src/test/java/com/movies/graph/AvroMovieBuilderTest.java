@@ -67,7 +67,7 @@ class AvroMovieBuilderTest {
     void shouldExtractDurationCorrectly() {
         AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
         assert(avroMovieBuilder.extractDuration("118 min")).equals(118);
-        assertNull(avroMovieBuilder.extractDuration("4 seasons"));
-        assertNull(avroMovieBuilder.extractDuration(""));
+        assert(avroMovieBuilder.extractDuration("4 seasons")).equals(-1);
+        assert(avroMovieBuilder.extractDuration("")).equals(-1);
     }
 }
