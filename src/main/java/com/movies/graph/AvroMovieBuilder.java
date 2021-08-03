@@ -20,7 +20,7 @@ public class AvroMovieBuilder {
         if(m.find()) {
             return Integer.parseInt(m.group(1));
         }
-        return null;
+        return -1;
     }
 
     public AvroMovie createAvroMovieFromCSVLine(String[] line) {
@@ -31,7 +31,7 @@ public class AvroMovieBuilder {
         String cast = line[4];
         String country = line[5];
         String dateAdded = LocalDate.parse("2016-06-12").toString();
-        Integer releaseYear = Integer.parseInt(line[7]);
+        Integer releaseYear = line[7].equals("") ? -1 : Integer.parseInt(line[7]);
         String rated = line[8];
         Integer duration = this.extractDuration(line[9]);
         String genres = line[10];
