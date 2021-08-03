@@ -25,7 +25,7 @@ public class MoviesProducer {
         this.context = context;
     }
 
-    private Callback producerCallback = (RecordMetadata recordMetadata, Exception e) -> {
+    private final Callback producerCallback = (RecordMetadata recordMetadata, Exception e) -> {
         if (e == null) {
             System.out.println("Success!");
             System.out.println(recordMetadata.toString());
@@ -73,7 +73,7 @@ public class MoviesProducer {
         csvReader.close();
     }
 
-    public static void main(String []args) throws InterruptedException {
+    public static void main(String []args) {
         Context context = new Context();
         MoviesProducer moviesProducer = new MoviesProducer(context);
         moviesProducer.produce();
