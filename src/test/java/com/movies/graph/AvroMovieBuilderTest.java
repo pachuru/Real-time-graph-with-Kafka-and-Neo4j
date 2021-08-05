@@ -78,6 +78,7 @@ class AvroMovieBuilderTest {
     void shouldExtractStringValueCorrectly() {
         AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
         assert(avroMovieBuilder.extractStringValue("TV Show")).equals("TV Show");
+        assert(avroMovieBuilder.extractStringValue("    TV   Show       ")).equals("TV   Show");
         assert(avroMovieBuilder.extractStringValue("")).equals("Unknown");
     }
 
