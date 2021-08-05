@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AvroMovieBuilderTest {
+class NetflixAvroMovieBuilderTest {
 
 
     @DisplayName("should create from csv line")
@@ -34,8 +34,8 @@ class AvroMovieBuilderTest {
                             "a man becomes obsessed with one of his daughter's friends."
             };
 
-            AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
-            AvroMovie movie = avroMovieBuilder.createAvroMovieFromCSVLine(csvLine);
+            NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
+            AvroMovie movie = netflixAvroMovieBuilder.createAvroMovieFromCSVLine(csvLine);
             assertNotNull(movie);
         }
 
@@ -57,8 +57,8 @@ class AvroMovieBuilderTest {
                     ""
             };
 
-            AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
-            AvroMovie movie = avroMovieBuilder.createAvroMovieFromCSVLine(csvLine);
+            NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
+            AvroMovie movie = netflixAvroMovieBuilder.createAvroMovieFromCSVLine(csvLine);
             assertNotNull(movie);
         }
 
@@ -67,19 +67,19 @@ class AvroMovieBuilderTest {
     @Test
     @DisplayName("should extract duration")
     void shouldExtractDurationCorrectly() {
-        AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
-        assert(avroMovieBuilder.extractDuration("118 min")).equals(118);
-        assert(avroMovieBuilder.extractDuration("4 seasons")).equals(-1);
-        assert(avroMovieBuilder.extractDuration("")).equals(-1);
+        NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
+        assert(netflixAvroMovieBuilder.extractDuration("118 min")).equals(118);
+        assert(netflixAvroMovieBuilder.extractDuration("4 seasons")).equals(-1);
+        assert(netflixAvroMovieBuilder.extractDuration("")).equals(-1);
     }
 
     @Test
     @DisplayName("should extract string value")
     void shouldExtractStringValueCorrectly() {
-        AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
-        assert(avroMovieBuilder.extractStringValue("TV Show")).equals("TV Show");
-        assert(avroMovieBuilder.extractStringValue("    TV   Show       ")).equals("TV   Show");
-        assert(avroMovieBuilder.extractStringValue("")).equals("Unknown");
+        NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
+        assert(netflixAvroMovieBuilder.extractStringValue("TV Show")).equals("TV Show");
+        assert(netflixAvroMovieBuilder.extractStringValue("    TV   Show       ")).equals("TV   Show");
+        assert(netflixAvroMovieBuilder.extractStringValue("")).equals("Unknown");
     }
 
     @Test
@@ -103,8 +103,8 @@ class AvroMovieBuilderTest {
                         "a man becomes obsessed with one of his daughter's friends."
         };
 
-        AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
-        AvroMovie movie = avroMovieBuilder.createAvroMovieFromCSVLine(csvLine);
+        NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
+        AvroMovie movie = netflixAvroMovieBuilder.createAvroMovieFromCSVLine(csvLine);
 
         assertNotEquals(movie.getId(), "Unknown");
         assert(movie.getType()).equals("Movie");
@@ -129,8 +129,8 @@ class AvroMovieBuilderTest {
     void shouldReplaceEmptyValues() {
         String[] csvLine = { "", "", "", "", "", "", "", "", "", "", "", ""};
 
-        AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
-        AvroMovie movie = avroMovieBuilder.createAvroMovieFromCSVLine(csvLine);
+        NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
+        AvroMovie movie = netflixAvroMovieBuilder.createAvroMovieFromCSVLine(csvLine);
 
         assertNotEquals(movie.getId(), "Unknown");
         assert(movie.getType()).equals("Unknown");

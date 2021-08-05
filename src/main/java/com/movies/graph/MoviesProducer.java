@@ -53,14 +53,14 @@ public class MoviesProducer {
     }
 
     public void produceFromCsv(String fileName, String topic, KafkaProducer<String, AvroMovie> producer) throws IOException, CsvValidationException, InterruptedException {
-        AvroMovieBuilder avroMovieBuilder = new AvroMovieBuilder();
+        NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
 
         try (Reader reader = Files.newBufferedReader(Paths.get(this.context.getEnvVar("DATA_DIR") + "/" + fileName)); CSVReader csvReader = new CSVReader(reader)) {
             // Skip the header
             csvReader.readNext();
             String[] line;
             while ((line = csvReader.readNext()) != null) {
-                AvroMovie movie = avroMovieBuilder.createAvroMovieFromCSVLine(line);
+                AvroMovie movie = netflixAvroMovieBuilder.createAvroMovieFromCSVLine(line);
                 ProducerRecord<String, AvroMovie> producerRecord = new ProducerRecord<>(topic, movie);
                 producer.send(producerRecord, producerCallback);
                 Thread.sleep(5000);

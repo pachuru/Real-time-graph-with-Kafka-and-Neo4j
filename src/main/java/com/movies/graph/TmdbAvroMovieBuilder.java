@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
 
 import org.json.JSONObject;
 
-public class TmdbAvroMovieBuilder {
+public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovieBuilder {
 
 
     String jsonObjectPatternStr = "\\{(.*?)\\}";
@@ -26,14 +26,32 @@ public class TmdbAvroMovieBuilder {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     DateFormat yearFormat = new SimpleDateFormat("yyyy");
 
+    @Override
+    public String extractTitle(String line) {
+        return null;
+    }
+
+    @Override
+    public String extractType(String line) {
+        return null;
+    }
+
+    @Override
     public String extractCast(String line) {
         return extractArrayListOf("name", line);
     }
 
+    @Override
+    public String extractDescription(String line) {
+        return null;
+    }
+
+    @Override
     public String extractCountries(String line) {
         return extractArrayListOf("name", line);
     }
 
+    @Override
     public String extractGenres(String line) {
         return extractArrayListOf("name", line);
     }
@@ -60,10 +78,12 @@ public class TmdbAvroMovieBuilder {
         return String.join(",", directors).trim();
     }
 
-    public String extractReleaseYear(String line) throws ParseException {
-        return this.yearFormat.format(this.dateFormat.parse(line));
+    @Override
+    public Integer extractReleaseYear(String line) throws ParseException {
+        return Integer.parseInt(this.yearFormat.format(this.dateFormat.parse(line)));
     }
 
+    @Override
     public Integer extractDuration(String line) {
         Double duration = Double.parseDouble(line);
         return duration.intValue();
