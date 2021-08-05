@@ -23,19 +23,24 @@ public class AvroMovieBuilder {
         return -1;
     }
 
+    public String extractStringValue(String value) {
+        return value.equals("") ? "Unknown" : value;
+    }
+
+
     public AvroMovie createAvroMovieFromCSVLine(String[] line) {
         String id = UUID.randomUUID().toString();
-        String type = line[1];
-        String title = line[2];
-        String director = line[3];
-        String cast = line[4];
-        String country = line[5];
+        String type = this.extractStringValue(line[1]);
+        String title = this.extractStringValue(line[2]);
+        String director = this.extractStringValue(line[3]);
+        String cast = this.extractStringValue(line[4]);
+        String country = this.extractStringValue(line[5]);
         String dateAdded = LocalDate.parse("2016-06-12").toString();
         Integer releaseYear = line[7].equals("") ? -1 : Integer.parseInt(line[7]);
-        String rated = line[8];
+        String rated = this.extractStringValue(line[8]);
         Integer duration = this.extractDuration(line[9]);
-        String genres = line[10];
-        String description = line[11];
+        String genres = this.extractStringValue(line[10]);
+        String description = this.extractStringValue(line[11]);
 
         return AvroMovie.newBuilder()
                 .setId(id)
