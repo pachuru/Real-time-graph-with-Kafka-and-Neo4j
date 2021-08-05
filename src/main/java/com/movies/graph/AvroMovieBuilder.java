@@ -27,8 +27,6 @@ public class AvroMovieBuilder {
         return value.equals("") ? "Unknown" : value.trim();
     }
 
-
-
     public AvroMovie createAvroMovieFromCSVLine(String[] line) {
         String id = UUID.randomUUID().toString();
         String type = this.extractStringValue(line[1]);

@@ -20,6 +20,7 @@
         <java-dotenv.version>5.2.2</java-dotenv.version>
         <avro-maven-plugin.version>1.10.2</avro-maven-plugin.version>
         <maven-build-helper.version>3.2.0</maven-build-helper.version>
+        <json.version>20210307</json.version>
     </properties>
 
     <repositories>
@@ -67,6 +68,12 @@
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${json.version}</version>
         </dependency>
     </dependencies>
 
