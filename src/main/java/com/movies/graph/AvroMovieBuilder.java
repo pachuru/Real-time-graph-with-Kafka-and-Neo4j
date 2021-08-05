@@ -38,7 +38,7 @@ public class AvroMovieBuilder {
         String country = this.extractStringValue(line[5]);
         String dateAdded = LocalDate.parse("2016-06-12").toString();
         Integer releaseYear = line[7].equals("") ? -1 : Integer.parseInt(line[7]);
-        String rated = this.extractStringValue(line[8]);
+        String rating = this.extractStringValue(line[8]);
         Integer duration = this.extractDuration(line[9]);
         String genres = this.extractStringValue(line[10]);
         String description = this.extractStringValue(line[11]);
@@ -52,7 +52,7 @@ public class AvroMovieBuilder {
                 .setCountry(country)
                 .setDateAdded(dateAdded)
                 .setReleaseYear(releaseYear)
-                .setRated(rated)
+                .setRating(rating)
                 .setDuration(duration)
                 .setGenres(genres)
                 .setDescription(description)

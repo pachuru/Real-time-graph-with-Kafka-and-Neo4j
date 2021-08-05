@@ -116,7 +116,7 @@ class AvroMovieBuilderTest {
         assert(movie.getCountry()).equals("United States");
         assert(movie.getDateAdded()).equals(LocalDate.parse("2016-06-12").toString());
         assertEquals(1999, movie.getReleaseYear());
-        assert(movie.getRated()).equals("R");
+        assert(movie.getRating()).equals("R");
         assertEquals(112, movie.getDuration());
         assert(movie.getGenres()).equals("Dramas");
         assert(movie.getDescription()).equals("While struggling to endure his tightly wound wife, an unfulfilling job " +
@@ -140,7 +140,7 @@ class AvroMovieBuilderTest {
         assert(movie.getCountry()).equals("Unknown");
         assert(movie.getDateAdded()).equals(LocalDate.parse("2016-06-12").toString());
         assertEquals(movie.getReleaseYear(), -1);
-        assert(movie.getRated()).equals("Unknown");
+        assert(movie.getRating()).equals("Unknown");
         assertEquals(movie.getDuration(), -1);
         assert(movie.getGenres()).equals("Unknown");
         assert(movie.getDescription()).equals("Unknown");
