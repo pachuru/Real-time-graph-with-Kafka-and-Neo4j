@@ -37,20 +37,20 @@ services:
                 Description: event.description
             }) return s as show", {event:event}) YIELD value
         with event, value.show as show
-        foreach(directorName in split(trim(coalesce(event.director, "")), ",") |
+        foreach(directorName in split(event.director, ",") |
           merge(d:Director{Name: directorName})
           create(d)-[:DIRECTED]->(show))
-        foreach(actorName in split(trim(coalesce(event.cast, "")), ",") |
+        foreach(actorName in split(event.cast, ",") |
           merge(a:Actor{Name: actorName})
           create (a)-[:ACTED_IN]->(show))
-        merge(c:Country{Name: coalesce(event.country, "unknown")})
-        create(c)<-[:MADE_IN]-(show)
-        foreach(genre in split(trim(coalesce(event.listed_in, "")), ",") |
-          merge(g:Genre{Name:genre})
+        foreach(countryName in split(event.country, ",") |
+          merge(c:Country{Name: countryName})
+          create(c)<-[:MADE_IN]-(show))
+        foreach(genre in split(event.listed_in, ",") |
+          merge(g:Genre{Name: event.genre})
           create (g)<-[:BELONGS_TO]-(show))
-        merge(r:Rated{Name: coalesce(event.rating, "unknown")})
+        merge(r:Rated{Name: event.rating})
         create(r)<-[:RATED]-(show)
-
       NEO4J_kafka_schema_registry_url: 'http://schema_registry:8081'
 
   zookeeper:

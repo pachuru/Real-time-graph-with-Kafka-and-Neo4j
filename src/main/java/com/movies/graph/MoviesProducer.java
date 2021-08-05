@@ -66,7 +66,7 @@ public class MoviesProducer {
             AvroMovie movie = avroMovieBuilder.createAvroMovieFromCSVLine(line);
             ProducerRecord<String, AvroMovie> producerRecord = new ProducerRecord<>(topic, movie);
             producer.send(producerRecord, producerCallback);
-            Thread.sleep(1000);
+            Thread.sleep(5000);
         }
 
         reader.close();
