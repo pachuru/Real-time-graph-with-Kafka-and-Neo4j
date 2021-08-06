@@ -10,8 +10,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class NetflixAvroMovieBuilderTest {
 
 
+    @Nested
     @DisplayName("should create from csv line")
-    public static class CreateAvroMovieFromCSVLine {
+    class CreateAvroMovieFromCSVLine {
 
         @Test
         @DisplayName("when there's data for all fields")
@@ -64,8 +65,9 @@ class NetflixAvroMovieBuilderTest {
 
     }
 
+    @Nested
     @DisplayName("should extract the fields")
-    public static class ExtractFields {
+    class ExtractFields {
         @Test
         @DisplayName("with string value")
         void shouldExtractStringValueCorrectly() {

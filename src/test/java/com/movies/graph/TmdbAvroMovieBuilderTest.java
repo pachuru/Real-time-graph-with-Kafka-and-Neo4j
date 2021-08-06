@@ -99,7 +99,7 @@ class TmdbAvroMovieBuilderTest {
         csvLine[1] = credits;
 
         String genres = "[{'id': 16, 'name': 'Animation'}, {'id': 35, 'name': 'Comedy'}, {'id': 10751, 'name': 'Family'}]\n";
-        csvLine[3] = genres;
+        csvLine[6] = genres;
 
         String description = "Led by Woody, Andy's toys live happily in his room until Andy's birthday brings Buzz Lightyear onto the scene.";
         csvLine[12] = description;
