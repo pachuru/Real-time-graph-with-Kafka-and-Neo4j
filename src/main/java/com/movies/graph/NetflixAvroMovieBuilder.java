@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 
-public class NetflixAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovieBuilder{
+public class NetflixAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovieBuilder {
 
     private String durationPatternStr = "(\\d+) min";
     private Pattern durationPattern;
@@ -17,42 +17,47 @@ public class NetflixAvroMovieBuilder extends AvroMovieBuilder implements IAvroMo
 
     @Override
     public String extractTitle(String line) {
-        return null;
+        return this.extractStringValue(line);
     }
 
     @Override
     public String extractType(String line) {
-        return null;
+        return this.extractStringValue(line);
     }
 
     @Override
     public String extractCast(String line) {
-        return null;
+        return this.extractStringValue(line);
     }
 
     @Override
     public String extractDescription(String line) {
-        return null;
+        return this.extractStringValue(line);
     }
 
     @Override
     public String extractCountries(String line) {
-        return null;
+        return this.extractStringValue(line);
     }
 
     @Override
     public String extractGenres(String line) {
-        return null;
+        return this.extractStringValue(line);
     }
 
     @Override
     public String extractDirectors(String line) {
-        return null;
+        return this.extractStringValue(line);
     }
 
     @Override
     public Integer extractReleaseYear(String line) {
-        return null;
+        return line.equals("") ? -1 : Integer.parseInt(line);
+    }
+
+    @Override
+    public String extractRating(String line) {
+        return this.extractStringValue(line);
     }
 
     @Override
@@ -65,26 +70,26 @@ public class NetflixAvroMovieBuilder extends AvroMovieBuilder implements IAvroMo
     }
 
     public AvroMovie createAvroMovieFromCSVLine(String[] line) {
-        String id = UUID.randomUUID().toString();
-        String type = this.extractStringValue(line[1]);
-        String title = this.extractStringValue(line[2]);
-        String director = this.extractStringValue(line[3]);
-        String cast = this.extractStringValue(line[4]);
-        String country = this.extractStringValue(line[5]);
-        String dateAdded = LocalDate.parse("2016-06-12").toString();
-        Integer releaseYear = line[7].equals("") ? -1 : Integer.parseInt(line[7]);
-        String rating = this.extractStringValue(line[8]);
+        String id = this.generateId();
+        String type = this.extractType(line[1]);
+        String title = this.extractTitle(line[2]);
+        String directors = this.extractDirectors(line[3]);
+        String cast = this.extractCast(line[4]);
+        String countries = this.extractCountries(line[5]);
+        String dateAdded = this.generateDateAdded();
+        Integer releaseYear = this.extractReleaseYear(line[7]);
+        String rating = this.extractRating(line[8]);
         Integer duration = this.extractDuration(line[9]);
-        String genres = this.extractStringValue(line[10]);
-        String description = this.extractStringValue(line[11]);
+        String genres = this.extractGenres(line[10]);
+        String description = this.extractDescription(line[11]);
 
         return AvroMovie.newBuilder()
                 .setId(id)
                 .setType(type)
                 .setTitle(title)
-                .setDirector(director)
+                .setDirector(directors)
                 .setCast(cast)
-                .setCountry(country)
+                .setCountry(countries)
                 .setDateAdded(dateAdded)
                 .setReleaseYear(releaseYear)
                 .setRating(rating)

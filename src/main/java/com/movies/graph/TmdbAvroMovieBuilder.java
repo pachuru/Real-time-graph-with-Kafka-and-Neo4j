@@ -1,9 +1,7 @@
 package com.movies.graph;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -28,12 +26,12 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
 
     @Override
     public String extractTitle(String line) {
-        return null;
+        return this.extractStringValue(line);
     }
 
     @Override
     public String extractType(String line) {
-        return null;
+        return this.extractStringValue(line);
     }
 
     @Override
@@ -43,7 +41,7 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
 
     @Override
     public String extractDescription(String line) {
-        return null;
+        return this.extractStringValue(line);
     }
 
     @Override
@@ -56,14 +54,39 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
         return extractArrayListOf("name", line);
     }
 
+    @Override
+    public Integer extractReleaseYear(String line){
+        if(line == "") { return -1; }
+        try {
+            return Integer.parseInt(this.yearFormat.format(this.dateFormat.parse(line)));
+        }catch(ParseException e){
+            System.out.println("Error while extracting release year");
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    @Override
+    public String extractRating(String line) {
+        return this.extractStringValue(line);
+    }
+
+    @Override
+    public Integer extractDuration(String line) {
+        if(line.equals("")) { return -1; }
+        Double duration = Double.parseDouble(line);
+        return duration.intValue();
+    }
+
     public String extractArrayListOf(String attribute, String line) {
         Matcher m = this.jsonObjectPattern.matcher(line);
-        ArrayList<String> cast = new ArrayList<>();
+        ArrayList<String> elements = new ArrayList<>();
         while(m.find()) {
-            JSONObject actor = new JSONObject(m.group(0));
-            cast.add(actor.getString(attribute));
+            JSONObject element = new JSONObject(m.group(0));
+            elements.add(element.getString(attribute).trim());
         }
-        return String.join(",", cast).trim();
+        if(elements.size() == 0) { return "Unknown"; }
+        return String.join(",", elements);
     }
 
     public String extractDirectors(String line) {
@@ -72,21 +95,43 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
         while(m.find()) {
             JSONObject credit = new JSONObject(m.group(0));
             if(credit.getString("job").equals("Director")) {
-                directors.add(credit.getString("name"));
+                directors.add(credit.getString("name").trim());
             }
         }
-        return String.join(",", directors).trim();
+        if(directors.size() == 0) { return "Unknown"; }
+        return String.join(",", directors);
     }
 
     @Override
-    public Integer extractReleaseYear(String line) throws ParseException {
-        return Integer.parseInt(this.yearFormat.format(this.dateFormat.parse(line)));
-    }
+    public AvroMovie createAvroMovieFromCSVLine(String[] line) {
 
-    @Override
-    public Integer extractDuration(String line) {
-        Double duration = Double.parseDouble(line);
-        return duration.intValue();
+        String id = this.generateId();
+        String type = "Movie";
+        String cast = this.extractCast(line[0]);
+        String directors = this.extractDirectors(line[1]);
+        String genres = this.extractGenres(line[3]);
+        String description = this.extractDescription(line[12]);
+        String countries = this.extractCountries(line[16]);
+        String dateAdded = this.generateDateAdded();
+        Integer releaseYear = this.extractReleaseYear(line[17]);
+        String rating = "Unknown";
+        Integer duration = this.extractDuration(line[19]);
+        String title = this.extractTitle(line[23]);
+
+        return AvroMovie.newBuilder()
+                .setId(id)
+                .setType(type)
+                .setTitle(title)
+                .setDirector(directors)
+                .setCast(cast)
+                .setCountry(countries)
+                .setDateAdded(dateAdded)
+                .setReleaseYear(releaseYear)
+                .setRating(rating)
+                .setDuration(duration)
+                .setGenres(genres)
+                .setDescription(description)
+                .build();
     }
 
 
@@ -107,17 +152,19 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
             String[] creditsLine;
             String[] metadataLine;
             while ((creditsLine = creditsCsvReader.readNext()) != null && (metadataLine = metadataCsvReader.readNext()) != null) {
-                System.out.println(tamb.extractCast(creditsLine[0]));
-                System.out.println(tamb.extractDirectors(creditsLine[1]));
-                System.out.println(tamb.extractGenres(metadataLine[3])); // genres (array of json)
+                System.out.println("Credit line length: " + creditsLine.length);
+                System.out.println("Metadata line length: " + metadataLine.length);
+                System.out.println(creditsLine[0]);
+                System.out.println(creditsLine[1]);
+                System.out.println(metadataLine[3]); // genres (array of json)
                 System.out.println(metadataLine[9]); // overview (string)
-                System.out.println(tamb.extractCountries(metadataLine[13])); // countries (array of json)
-                System.out.println(tamb.extractReleaseYear(metadataLine[14])); // release date (yyyy-mm-dd)
-                System.out.println(tamb.extractDuration(metadataLine[16])); // runtime (double)
+                System.out.println(metadataLine[13]); // countries (array of json)
+                System.out.println(metadataLine[14]); // release date (yyyy-mm-dd)
+                System.out.println(metadataLine[16]); // runtime (double)
                 System.out.println(metadataLine[20]); // title (string)
                 Thread.sleep(5000);
             }
-        } catch (IOException | CsvValidationException | InterruptedException | ParseException e) {
+        } catch (IOException | CsvValidationException | InterruptedException e) {
             e.printStackTrace();
         }
     }

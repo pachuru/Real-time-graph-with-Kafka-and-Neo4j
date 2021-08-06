@@ -64,22 +64,26 @@ class NetflixAvroMovieBuilderTest {
 
     }
 
-    @Test
-    @DisplayName("should extract duration")
-    void shouldExtractDurationCorrectly() {
-        NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
-        assert(netflixAvroMovieBuilder.extractDuration("118 min")).equals(118);
-        assert(netflixAvroMovieBuilder.extractDuration("4 seasons")).equals(-1);
-        assert(netflixAvroMovieBuilder.extractDuration("")).equals(-1);
-    }
+    @DisplayName("should extract the fields")
+    public static class ExtractFields {
+        @Test
+        @DisplayName("with string value")
+        void shouldExtractStringValueCorrectly() {
+            NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
+            assert(netflixAvroMovieBuilder.extractStringValue("TV Show")).equals("TV Show");
+            assert(netflixAvroMovieBuilder.extractStringValue("    TV   Show       ")).equals("TV   Show");
+            assert(netflixAvroMovieBuilder.extractStringValue("")).equals("Unknown");
+        }
 
-    @Test
-    @DisplayName("should extract string value")
-    void shouldExtractStringValueCorrectly() {
-        NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
-        assert(netflixAvroMovieBuilder.extractStringValue("TV Show")).equals("TV Show");
-        assert(netflixAvroMovieBuilder.extractStringValue("    TV   Show       ")).equals("TV   Show");
-        assert(netflixAvroMovieBuilder.extractStringValue("")).equals("Unknown");
+        @Test
+        @DisplayName("extract duration")
+        void shouldExtractDurationCorrectly() {
+            NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
+            assert(netflixAvroMovieBuilder.extractDuration("118 min")).equals(118);
+            assert(netflixAvroMovieBuilder.extractDuration("4 seasons")).equals(-1);
+            assert(netflixAvroMovieBuilder.extractDuration("")).equals(-1);
+        }
+
     }
 
     @Test
@@ -145,4 +149,5 @@ class NetflixAvroMovieBuilderTest {
         assert(movie.getGenres()).equals("Unknown");
         assert(movie.getDescription()).equals("Unknown");
     }
+
 }

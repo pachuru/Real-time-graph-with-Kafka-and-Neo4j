@@ -9,5 +9,7 @@ public interface IAvroMovieBuilder {
     String extractGenres(String line);
     String extractDirectors(String line);
     Integer extractReleaseYear(String line);
+    String extractRating(String line);
     Integer extractDuration(String line);
+    AvroMovie createAvroMovieFromCSVLine(String[] line);
 }
