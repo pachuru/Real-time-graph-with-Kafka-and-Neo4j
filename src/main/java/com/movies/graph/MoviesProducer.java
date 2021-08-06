@@ -1,13 +1,6 @@
 package com.movies.graph;
 
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
 import org.apache.kafka.clients.producer.*;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Properties;
 
 public class MoviesProducer {
@@ -25,7 +18,7 @@ public class MoviesProducer {
         this.context = context;
     }
 
-    private final Callback producerCallback = (RecordMetadata recordMetadata, Exception e) -> {
+    protected final Callback producerCallback = (RecordMetadata recordMetadata, Exception e) -> {
         if (e == null) {
             System.out.println("Success!");
             System.out.println(recordMetadata.toString());
@@ -33,44 +26,4 @@ public class MoviesProducer {
             e.printStackTrace();
         }
     };
-
-    // TODO: Treat exceptions in a clever way
-    public void produce(){
-        KafkaProducer<String, AvroMovie> producer = new KafkaProducer<>(this.properties);
-        try {
-            produceNetflixMovies(producer);
-        } catch(Exception e) {
-            e.printStackTrace();
-            producer.flush();
-            producer.close();
-        }
-    }
-
-    public void produceNetflixMovies(KafkaProducer<String, AvroMovie> producer) throws CsvValidationException, IOException, InterruptedException {
-        String topic = this.context.getEnvVar("NETFLIX_TOPIC_NAME");
-        String csvFileName = this.context.getEnvVar("NETFLIX_CSV_FILENAME");
-        produceFromCsv(csvFileName, topic, producer);
-    }
-
-    public void produceFromCsv(String fileName, String topic, KafkaProducer<String, AvroMovie> producer) throws IOException, CsvValidationException, InterruptedException {
-        NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
-
-        try (Reader reader = Files.newBufferedReader(Paths.get(this.context.getEnvVar("DATA_DIR") + "/" + fileName)); CSVReader csvReader = new CSVReader(reader)) {
-            // Skip the header
-            csvReader.readNext();
-            String[] line;
-            while ((line = csvReader.readNext()) != null) {
-                AvroMovie movie = netflixAvroMovieBuilder.createAvroMovieFromCSVLine(line);
-                ProducerRecord<String, AvroMovie> producerRecord = new ProducerRecord<>(topic, movie);
-                producer.send(producerRecord, producerCallback);
-                Thread.sleep(5000);
-            }
-        }
-    }
-
-    public static void main(String []args) {
-        Context context = new Context();
-        MoviesProducer moviesProducer = new MoviesProducer(context);
-        moviesProducer.produce();
-    }
 }

@@ -31,12 +31,14 @@ public class MoviesConsumer {
 
     private void consumeNetflixTopic() {
         final KafkaConsumer<String, GenericRecord> consumer = new KafkaConsumer<>(this.properties);
-        consumer.subscribe(Arrays.asList(this.context.getEnvVar("NETFLIX_TOPIC_NAME")));
+        //consumer.subscribe(Arrays.asList(this.context.getEnvVar("NETFLIX_TOPIC_NAME")));
+        consumer.subscribe(Arrays.asList(this.context.getEnvVar("TMDB_TOPIC_NAME")));
         try {
             while (true) {
                 ConsumerRecords<String, GenericRecord> records = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, GenericRecord> record : records) {
-                    System.out.printf("offset = %d, key = %s, value = %s \n", record.offset(), record.key(), record.value());
+                    System.out.printf("topic = %s, offset = %d, key = %s, value = %s \n", record.topic(), record.offset(),
+                            record.key(), record.value());
                 }
             }
         } finally {
