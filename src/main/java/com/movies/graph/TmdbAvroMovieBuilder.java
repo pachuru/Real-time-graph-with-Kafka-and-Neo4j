@@ -61,13 +61,13 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
 
     @Override
     public Integer extractReleaseYear(String line){
-        if(line == "") { return -1; }
+        if(line.equals("")) { return Constants.UNKNOWN_INT; }
         try {
             return Integer.parseInt(this.yearFormat.format(this.dateFormat.parse(line)));
         }catch(ParseException e){
             System.out.println("Error while extracting release year");
             e.printStackTrace();
-            return -1;
+            return Constants.UNKNOWN_INT;
         }
     }
 
@@ -78,7 +78,7 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
 
     @Override
     public Integer extractDuration(String line) {
-        if(line.equals("")) { return -1; }
+        if(line.equals("")) { return Constants.UNKNOWN_INT; }
         Double duration = Double.parseDouble(line);
         return duration.intValue();
     }
@@ -90,7 +90,7 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
             JSONObject element = new JSONObject(m.group(0));
             elements.add(element.getString(attribute).trim());
         }
-        if(elements.size() == 0) { return "Unknown"; }
+        if(elements.size() == 0) { return Constants.UNKNOWN_STR; }
         return String.join(",", elements);
     }
 
@@ -103,7 +103,7 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
                 directors.add(credit.getString("name").trim());
             }
         }
-        if(directors.size() == 0) { return "Unknown"; }
+        if(directors.size() == 0) { return Constants.UNKNOWN_STR; }
         return String.join(",", directors);
     }
 
@@ -119,7 +119,7 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
         String countries = this.extractCountries(line[16]);
         String dateAdded = this.generateDateAdded();
         Integer releaseYear = this.extractReleaseYear(line[17]);
-        String rating = "Unknown";
+        String rating = Constants.UNKNOWN_STR;
         Integer duration = this.extractDuration(line[19]);
         String title = this.extractTitle(line[23]);
 

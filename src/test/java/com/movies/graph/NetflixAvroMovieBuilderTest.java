@@ -74,7 +74,7 @@ class NetflixAvroMovieBuilderTest {
             NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
             assert(netflixAvroMovieBuilder.extractStringValue("TV Show")).equals("TV Show");
             assert(netflixAvroMovieBuilder.extractStringValue("    TV   Show       ")).equals("TV   Show");
-            assert(netflixAvroMovieBuilder.extractStringValue("")).equals("Unknown");
+            assert(netflixAvroMovieBuilder.extractStringValue("")).equals(Constants.UNKNOWN_STR);
         }
 
         @Test
@@ -83,7 +83,7 @@ class NetflixAvroMovieBuilderTest {
             NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
             assert(netflixAvroMovieBuilder.extractDuration("118 min")).equals(118);
             assert(netflixAvroMovieBuilder.extractDuration("4 seasons")).equals(-1);
-            assert(netflixAvroMovieBuilder.extractDuration("")).equals(-1);
+            assert(netflixAvroMovieBuilder.extractDuration("")).equals(Constants.UNKNOWN_INT);
         }
 
     }
@@ -112,7 +112,7 @@ class NetflixAvroMovieBuilderTest {
         NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
         AvroMovie movie = netflixAvroMovieBuilder.createAvroMovieFromCSVLine(csvLine);
 
-        assertNotEquals(movie.getId(), "Unknown");
+        assertNotEquals(movie.getId(), Constants.UNKNOWN_STR);
         assert(movie.getType()).equals("Movie");
         assert(movie.getTitle()).equals("American Beauty");
         assert(movie.getDirector()).equals("Sam Mendes");
@@ -138,18 +138,18 @@ class NetflixAvroMovieBuilderTest {
         NetflixAvroMovieBuilder netflixAvroMovieBuilder = new NetflixAvroMovieBuilder();
         AvroMovie movie = netflixAvroMovieBuilder.createAvroMovieFromCSVLine(csvLine);
 
-        assertNotEquals(movie.getId(), "Unknown");
-        assert(movie.getType()).equals("Unknown");
-        assert(movie.getTitle()).equals("Unknown");
-        assert(movie.getDirector()).equals("Unknown");
-        assert(movie.getCast()).equals("Unknown");
-        assert(movie.getCountry()).equals("Unknown");
+        assertNotEquals(movie.getId(),Constants.UNKNOWN_STR);
+        assert(movie.getType()).equals(Constants.UNKNOWN_STR);
+        assert(movie.getTitle()).equals(Constants.UNKNOWN_STR);
+        assert(movie.getDirector()).equals(Constants.UNKNOWN_STR);
+        assert(movie.getCast()).equals(Constants.UNKNOWN_STR);
+        assert(movie.getCountry()).equals(Constants.UNKNOWN_STR);
         assert(movie.getDateAdded()).equals(LocalDate.parse("2016-06-12").toString());
-        assertEquals(movie.getReleaseYear(), -1);
-        assert(movie.getRating()).equals("Unknown");
-        assertEquals(movie.getDuration(), -1);
-        assert(movie.getGenres()).equals("Unknown");
-        assert(movie.getDescription()).equals("Unknown");
+        assertEquals(movie.getReleaseYear(), Constants.UNKNOWN_INT);
+        assert(movie.getRating()).equals(Constants.UNKNOWN_STR);
+        assertEquals(movie.getDuration(), Constants.UNKNOWN_INT);
+        assert(movie.getGenres()).equals(Constants.UNKNOWN_STR);
+        assert(movie.getDescription()).equals(Constants.UNKNOWN_STR);
     }
 
 }

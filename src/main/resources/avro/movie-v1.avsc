@@ -13,7 +13,7 @@
         { "name": "dateAdded", "type": "string" },
         { "name": "releaseYear", "type": "int" },
         { "name": "rating", "type": "string" },
-        { "name": "duration", "type": "double" },
+        { "name": "duration", "type": "int" },
         { "name": "genres", "type": "string" },
         { "name": "description", "type": "string" }
     ]

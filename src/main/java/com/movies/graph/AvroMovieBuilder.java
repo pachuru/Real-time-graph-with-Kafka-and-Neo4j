@@ -6,7 +6,7 @@ import java.util.UUID;
 public class AvroMovieBuilder {
 
     public String extractStringValue(String value) {
-        return value.equals("") ? "Unknown" : value.trim();
+        return value.equals("") ? Constants.UNKNOWN_STR : value.trim();
     }
 
     public String generateId() {

@@ -66,7 +66,7 @@ public class NetflixAvroMovieBuilder extends AvroMovieBuilder implements IAvroMo
         if(m.find()) {
             return Integer.parseInt(m.group(1));
         }
-        return -1;
+        return Constants.UNKNOWN_INT;
     }
 
     public AvroMovie createAvroMovieFromCSVLine(String[] line) {

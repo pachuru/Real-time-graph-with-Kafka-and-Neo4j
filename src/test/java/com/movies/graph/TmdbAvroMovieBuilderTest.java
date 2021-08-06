@@ -53,7 +53,7 @@ class TmdbAvroMovieBuilderTest {
     void shouldExtractDuration() {
         TmdbAvroMovieBuilder tamb = new TmdbAvroMovieBuilder();
         assertEquals(tamb.extractDuration("81.0"), 81);
-        assertEquals(tamb.extractDuration(""), -1);
+        assertEquals(tamb.extractDuration(""), Constants.UNKNOWN_INT);
     }
 
     @Test
@@ -121,7 +121,7 @@ class TmdbAvroMovieBuilderTest {
         TmdbAvroMovieBuilder tamb = new TmdbAvroMovieBuilder();
         AvroMovie movie = tamb.createAvroMovieFromCSVLine(csvLine);
 
-        assertNotEquals(movie.getId(), "Unknown");
+        assertNotEquals(movie.getId(), Constants.UNKNOWN_STR);
         assertEquals(movie.getType(), "Movie");
         assertEquals(movie.getTitle(), "Toy Story");
         assertEquals(movie.getDirector(), "John Lasseter,Joel Cohen");
@@ -129,7 +129,7 @@ class TmdbAvroMovieBuilderTest {
         assertEquals(movie.getCountry(), "United States of America,Brazil");
         assertEquals(movie.getDateAdded(), LocalDate.parse("2016-06-12").toString());
         assertEquals(movie.getReleaseYear(), 1995);
-        assertEquals(movie.getRating(), "Unknown");
+        assertEquals(movie.getRating(), Constants.UNKNOWN_STR);
         assertEquals(movie.getDuration(), 81);
         assertEquals(movie.getGenres(), "Animation,Comedy,Family");
         assertEquals(movie.getDescription(), description);
@@ -145,17 +145,17 @@ class TmdbAvroMovieBuilderTest {
         TmdbAvroMovieBuilder tamb = new TmdbAvroMovieBuilder();
         AvroMovie movie = tamb.createAvroMovieFromCSVLine(csvLine);
 
-        assertNotEquals(movie.getId(), "Unknown");
+        assertNotEquals(movie.getId(), Constants.UNKNOWN_STR);
         assertEquals(movie.getType(), "Movie");
-        assertEquals(movie.getTitle(), "Unknown");
-        assertEquals(movie.getDirector(), "Unknown");
-        assertEquals(movie.getCast(), "Unknown");
-        assertEquals(movie.getCountry(), "Unknown");
+        assertEquals(movie.getTitle(), Constants.UNKNOWN_STR);
+        assertEquals(movie.getDirector(), Constants.UNKNOWN_STR);
+        assertEquals(movie.getCast(), Constants.UNKNOWN_STR);
+        assertEquals(movie.getCountry(), Constants.UNKNOWN_STR);
         assertEquals(movie.getDateAdded(), LocalDate.parse("2016-06-12").toString());
-        assertEquals(movie.getReleaseYear(), -1);
-        assertEquals(movie.getRating(), "Unknown");
-        assertEquals(movie.getDuration(), -1);
-        assertEquals(movie.getGenres(), "Unknown");
-        assertEquals(movie.getDescription(), "Unknown");
+        assertEquals(movie.getReleaseYear(), Constants.UNKNOWN_INT);
+        assertEquals(movie.getRating(), Constants.UNKNOWN_STR);
+        assertEquals(movie.getDuration(), Constants.UNKNOWN_INT);
+        assertEquals(movie.getGenres(), Constants.UNKNOWN_STR);
+        assertEquals(movie.getDescription(), Constants.UNKNOWN_STR);
     }
 }
