@@ -5,15 +5,20 @@ import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONObject;
 
 public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovieBuilder {
@@ -109,7 +114,7 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
         String type = "Movie";
         String cast = this.extractCast(line[0]);
         String directors = this.extractDirectors(line[1]);
-        String genres = this.extractGenres(line[3]);
+        String genres = this.extractGenres(line[6]);
         String description = this.extractDescription(line[12]);
         String countries = this.extractCountries(line[16]);
         String dateAdded = this.generateDateAdded();
@@ -152,16 +157,19 @@ public class TmdbAvroMovieBuilder extends AvroMovieBuilder implements IAvroMovie
             String[] creditsLine;
             String[] metadataLine;
             while ((creditsLine = creditsCsvReader.readNext()) != null && (metadataLine = metadataCsvReader.readNext()) != null) {
-                System.out.println("Credit line length: " + creditsLine.length);
-                System.out.println("Metadata line length: " + metadataLine.length);
-                System.out.println(creditsLine[0]);
-                System.out.println(creditsLine[1]);
-                System.out.println(metadataLine[3]); // genres (array of json)
-                System.out.println(metadataLine[9]); // overview (string)
-                System.out.println(metadataLine[13]); // countries (array of json)
-                System.out.println(metadataLine[14]); // release date (yyyy-mm-dd)
-                System.out.println(metadataLine[16]); // runtime (double)
-                System.out.println(metadataLine[20]); // title (string)
+                AvroMovie movie = tamb.createAvroMovieFromCSVLine(Utils.concatWithCollection(creditsLine, metadataLine));
+                System.out.println(movie.getId());
+                System.out.println(movie.getType());
+                System.out.println(movie.getTitle());
+                System.out.println(movie.getDirector());
+                System.out.println(movie.getCast());
+                System.out.println(movie.getCountry());
+                System.out.println(movie.getDateAdded());
+                System.out.println(movie.getReleaseYear());
+                System.out.println(movie.getRating());
+                System.out.println(movie.getDuration());
+                System.out.println(movie.getGenres());
+                System.out.println(movie.getDescription());
                 Thread.sleep(5000);
             }
         } catch (IOException | CsvValidationException | InterruptedException e) {
