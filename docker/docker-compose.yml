@@ -51,6 +51,34 @@ services:
           create (g)<-[:BELONGS_TO]-(show))
         merge(r:Rated{Name: event.rating})
         create(r)<-[:RATED]-(show)
+      NEO4J_streams_sink_topic_cypher_tmdb-movies: >
+        with event
+        call apoc.do.when(event.type = "TV Show",
+            "create (s:Tv{
+                Title: event.title,
+                Duration: event.duration,
+                Description: event.description
+            }) return s as show",
+            "create (s:Movie{
+                Title: event.title,
+                Duration: event.duration,
+                Description: event.description
+            }) return s as show", {event:event}) YIELD value
+        with event, value.show as show
+        foreach(directorName in split(event.director, ",") |
+          merge(d:Director{Name: directorName})
+          create(d)-[:DIRECTED]->(show))
+        foreach(actorName in split(event.cast, ",") |
+          merge(a:Actor{Name: actorName})
+          create (a)-[:ACTED_IN]->(show))
+        foreach(countryName in split(event.country, ",") |
+          merge(c:Country{Name: countryName})
+          create(c)<-[:MADE_IN]-(show))
+        foreach(genre in split(event.listed_in, ",") |
+          merge(g:Genre{Name: event.genre})
+          create (g)<-[:BELONGS_TO]-(show))
+        merge(r:Rated{Name: event.rating})
+        create(r)<-[:RATED]-(show)
       NEO4J_kafka_schema_registry_url: 'http://schema_registry:8081'
 
   zookeeper:

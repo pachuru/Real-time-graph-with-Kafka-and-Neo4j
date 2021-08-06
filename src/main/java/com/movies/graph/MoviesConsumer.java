@@ -31,8 +31,8 @@ public class MoviesConsumer {
 
     private void consumeNetflixTopic() {
         final KafkaConsumer<String, GenericRecord> consumer = new KafkaConsumer<>(this.properties);
-        //consumer.subscribe(Arrays.asList(this.context.getEnvVar("NETFLIX_TOPIC_NAME")));
-        consumer.subscribe(Arrays.asList(this.context.getEnvVar("TMDB_TOPIC_NAME")));
+        consumer.subscribe(Arrays.asList(this.context.getEnvVar("TMDB_TOPIC_NAME"),
+                this.context.getEnvVar("NETFLIX_TOPIC_NAME")));
         try {
             while (true) {
                 ConsumerRecords<String, GenericRecord> records = consumer.poll(Duration.ofMillis(100));
