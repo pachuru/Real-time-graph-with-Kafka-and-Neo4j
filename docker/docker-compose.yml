@@ -71,50 +71,50 @@ services:
         merge(r)<-[:RATED]-(show)
       NEO4J_streams_sink_topic_cypher_tmdb-movies: >
         with event
-                call apoc.do.when(event.type = "TV Show",
-                    "merge (s:Tv{Title: event.title, ReleaseYear: event.releaseYear})
-                      on create
-                        set s.Duration = event.duration,
-                            s.Description = event.description
-                      on match
-                        set s.Duration = case when s.Duration = -1
-                              then event.duration
-                              else s.Duration
-                              end,
-                            s.Description = case when s.Description = \"Unknown\"
-                              then event.description
-                              else s.Description
-                              end
-                      return s as show",
-                    "merge (s:Movie{Title: event.title, ReleaseYear: event.releaseYear})
-                        on create
-                          set s.Duration = event.duration,
-                              s.Description = event.description
-                        on match
-                          set s.Duration = case when s.Duration = -1
-                                then event.duration
-                                else s.Duration
-                                end,
-                              s.Description = case when s.Description = \"Unknown\"
-                                then event.description
-                                else s.Description
-                                end
-                      return s as show", {event:event}) YIELD value
-                with event, value.show as show
-                foreach(directorName in split(event.director, ",") |
-                  merge(d:Director{Name: directorName})
-                  merge(d)-[:DIRECTED]->(show))
-                foreach(actorName in split(event.cast, ",") |
-                  merge(a:Actor{Name: actorName})
-                  merge(a)-[:ACTED_IN]->(show))
-                foreach(countryName in split(event.country, ",") |
-                  merge(c:Country{Name: countryName})
-                  merge(c)<-[:MADE_IN]-(show))
-                foreach(genre in split(event.listed_in, ",") |
-                  merge(g:Genre{Name: genre})
-                  merge (g)<-[:BELONGS_TO]-(show))
-                merge(r:Rated{Name: event.rating})
-                merge(r)<-[:RATED]-(show)
+        call apoc.do.when(event.type = "TV Show",
+            "merge (s:Tv{Title: event.title, ReleaseYear: event.releaseYear})
+              on create
+                set s.Duration = event.duration,
+                    s.Description = event.description
+              on match
+                set s.Duration = case when s.Duration = -1
+                      then event.duration
+                      else s.Duration
+                      end,
+                    s.Description = case when s.Description = \"Unknown\"
+                      then event.description
+                      else s.Description
+                      end
+              return s as show",
+            "merge (s:Movie{Title: event.title, ReleaseYear: event.releaseYear})
+                on create
+                  set s.Duration = event.duration,
+                      s.Description = event.description
+                on match
+                  set s.Duration = case when s.Duration = -1
+                        then event.duration
+                        else s.Duration
+                        end,
+                      s.Description = case when s.Description = \"Unknown\"
+                        then event.description
+                        else s.Description
+                        end
+              return s as show", {event:event}) YIELD value
+        with event, value.show as show
+        foreach(directorName in split(event.director, ",") |
+          merge(d:Director{Name: directorName})
+          merge(d)-[:DIRECTED]->(show))
+        foreach(actorName in split(event.cast, ",") |
+          merge(a:Actor{Name: actorName})
+          merge(a)-[:ACTED_IN]->(show))
+        foreach(countryName in split(event.country, ",") |
+          merge(c:Country{Name: countryName})
+          merge(c)<-[:MADE_IN]-(show))
+        foreach(genre in split(event.listed_in, ",") |
+          merge(g:Genre{Name: genre})
+          merge (g)<-[:BELONGS_TO]-(show))
+        merge(r:Rated{Name: event.rating})
+        merge(r)<-[:RATED]-(show)
       NEO4J_kafka_schema_registry_url: 'http://schema_registry:8081'
       NEO4J_dbms_memory_heap_initial__size: '5g'
       NEO4J_dbms_memory_heap_max__size: '5g'

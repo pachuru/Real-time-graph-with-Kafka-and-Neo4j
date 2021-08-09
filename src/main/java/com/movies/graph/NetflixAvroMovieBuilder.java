@@ -52,7 +52,10 @@ public class NetflixAvroMovieBuilder extends AvroMovieBuilder implements IAvroMo
 
     @Override
     public Integer extractReleaseYear(String line) {
-        return line.equals("") ? -1 : Integer.parseInt(line);
+        if(line.equals("")) {
+            return Constants.UNKNOWN_INT;
+        }
+        return Integer.parseInt(line);
     }
 
     @Override

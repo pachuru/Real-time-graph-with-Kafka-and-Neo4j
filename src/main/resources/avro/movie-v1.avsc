@@ -5,16 +5,16 @@
     "version": "1",
     "fields": [
         { "name": "id", "type": "string" },
-        { "name": "type", "type": "string" },
-        { "name": "title", "type": "string" },
-        { "name": "director", "type": "string" },
-        { "name": "cast", "type": "string" },
-        { "name": "country", "type": "string" },
+        { "name": "type", "type": ["string", "null"] },
+        { "name": "title", "type": ["string", "null"] },
+        { "name": "director", "type": ["string", "null"] },
+        { "name": "cast", "type": ["string", "null"] },
+        { "name": "country", "type": ["string", "null"] },
         { "name": "dateAdded", "type": "string" },
-        { "name": "releaseYear", "type": "int" },
-        { "name": "rating", "type": "string" },
-        { "name": "duration", "type": "int" },
-        { "name": "genres", "type": "string" },
-        { "name": "description", "type": "string" }
+        { "name": "releaseYear", "type": ["int", "null"] },
+        { "name": "rating", "type": ["string", "null"] },
+        { "name": "duration", "type": ["int", "null"] },
+        { "name": "genres", "type": ["string", "null"] },
+        { "name": "description", "type": ["string", "null"] }
     ]
 }
