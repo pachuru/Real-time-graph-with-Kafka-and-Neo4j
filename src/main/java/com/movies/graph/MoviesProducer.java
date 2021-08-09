@@ -1,7 +1,13 @@
 package com.movies.graph;
 
 import org.apache.kafka.clients.producer.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MoviesProducer {
 
@@ -26,4 +32,31 @@ public class MoviesProducer {
             e.printStackTrace();
         }
     };
+
+    public static void main(String[] args) {
+        Context ctx = new Context();
+
+        NetflixMoviesProducer nmp = new NetflixMoviesProducer(ctx);
+        TmdbMoviesProducer tmp = new TmdbMoviesProducer(ctx);
+
+        Callable<Void> netflixProduce = () -> {
+            nmp.produce();
+            return null;
+        };
+        Callable<Void> tmdbProduce = () -> {
+            tmp.produce();
+            return null;
+        };
+
+        List<Callable<Void>> taskList = new ArrayList<>();
+        taskList.add(netflixProduce);
+        taskList.add(tmdbProduce);
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        try {
+            executor.invokeAll(taskList);
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
+    }
 }
