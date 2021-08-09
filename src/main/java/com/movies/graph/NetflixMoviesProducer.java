@@ -40,7 +40,7 @@ public class NetflixMoviesProducer extends MoviesProducer implements IMoviesProd
                 AvroMovie movie = netflixAvroMovieBuilder.createAvroMovieFromCSVLine(line);
                 ProducerRecord<String, AvroMovie> producerRecord = new ProducerRecord<>(topic, movie);
                 producer.send(producerRecord, this.producerCallback);
-                Thread.sleep(5000);
+                Thread.sleep(Long.parseLong(this.context.getEnvVar("NETFLIX_SEND_RATE")));
             }
         }
     }

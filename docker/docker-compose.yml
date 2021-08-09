@@ -19,7 +19,7 @@ services:
       NEO4J_kafka_group_instance_id: "neo4j_sink"
       NEO4J_kafka_key_deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
       NEO4J_kafka_value_deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
-      NEO4J_kafka_max_poll_records: 16384
+      NEO4J_kafka_max_poll_records: 500
       NEO4J_dbms_logs_debug_level: DEBUG
       NEO4J_streams_source_enabled: "false"
       NEO4J_streams_sink_enabled: "true"

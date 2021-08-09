@@ -49,7 +49,7 @@ public class TmdbMoviesProducer extends MoviesProducer implements IMoviesProduce
                 AvroMovie movie = tamb.createAvroMovieFromCSVLine(Utils.concatWithCollection(creditsLine, metadataLine));
                 ProducerRecord<String, AvroMovie> producerRecord = new ProducerRecord<>(topic, movie);
                 producer.send(producerRecord, this.producerCallback);
-                Thread.sleep(5000);
+                Thread.sleep(Long.parseLong(this.context.getEnvVar("TMDB_SEND_RATE")));
             }
         }
     }
