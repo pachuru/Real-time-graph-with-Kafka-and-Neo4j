@@ -26,35 +26,23 @@ services:
       NEO4J_streams_sink_topic_cypher_netflix-movies: >
         with event
         call apoc.do.case([
-            event.type = "TV Show" and event.title is not null,
+            event.type = "TV Show" and event.title is not null and event.releaseYear is not null,
             "merge (s:Tv{Title: event.title, ReleaseYear: event.releaseYear})
               on create
                 set s.Duration = event.duration,
                     s.Description = event.description
               on match
-                set s.Duration = case when s.Duration is null
-                      then event.duration
-                      else s.Duration
-                      end,
-                    s.Description = case when s.Description is null
-                      then event.description
-                      else s.Description
-                      end
+                set s.Duration = coalesce(s.Duration, event.duration),
+                    s.Description = coalesce(s.Description, event.description)
               return s as show",
-            event.type = "Movie" and event.title is not null,
+            event.type = "Movie" and event.title is not null and event.releaseYear is not null,
             "merge (s:Movie{Title: event.title, ReleaseYear: event.releaseYear})
                 on create
                   set s.Duration = event.duration,
                       s.Description = event.description
                 on match
-                  set s.Duration = case when s.Duration is null
-                        then event.duration
-                        else s.Duration
-                        end,
-                      s.Description = case when s.Description is null
-                        then event.description
-                        else s.Description
-                        end
+                  set s.Duration = coalesce(s.Duration, event.duration),
+                      s.Description = coalesce(s.Description, event.description)
               return s as show"], "", {event:event}) YIELD value
         with event, value.show as show
         foreach(directorName in split(event.director, ",") |
@@ -69,42 +57,29 @@ services:
         foreach(genre in split(event.listed_in, ",") |
           merge(g:Genre{Name: genre})
           merge (g)<-[:BELONGS_TO]-(show))
-        foreach (x IN CASE WHEN event.rating IS NOT NULL THEN [1] ELSE [0] END |
+        foreach (x IN CASE WHEN event.rating IS NOT NULL THEN [1] ELSE [] END |
           merge(r:Rated{Name: event.rating})
           merge(r)<-[:RATED]-(show));
-
       NEO4J_streams_sink_topic_cypher_tmdb-movies: >
         with event
           call apoc.do.case([
-              event.type = "TV Show" and event.title is not null,
+              event.type = "TV Show" and event.title is not null and event.releaseYear is not null,
               "merge (s:Tv{Title: event.title, ReleaseYear: event.releaseYear})
                 on create
                   set s.Duration = event.duration,
                       s.Description = event.description
                 on match
-                  set s.Duration = case when s.Duration is null
-                        then event.duration
-                        else s.Duration
-                        end,
-                      s.Description = case when s.Description is null
-                        then event.description
-                        else s.Description
-                        end
+                  set s.Duration = coalesce(s.Duration, event.duration),
+                      s.Description = coalesce(s.Description, event.description)
                 return s as show",
-              event.type = "Movie" and event.title is not null,
+              event.type = "Movie" and event.title is not null and event.releaseYear is not null,
               "merge (s:Movie{Title: event.title, ReleaseYear: event.releaseYear})
                   on create
                     set s.Duration = event.duration,
                         s.Description = event.description
                   on match
-                    set s.Duration = case when s.Duration is null
-                          then event.duration
-                          else s.Duration
-                          end,
-                        s.Description = case when s.Description is null
-                          then event.description
-                          else s.Description
-                          end
+                    set s.Duration = coalesce(s.Duration, event.duration),
+                        s.Description = coalesce(s.Description, event.description)
                 return s as show"], "", {event:event}) YIELD value
           with event, value.show as show
           foreach(directorName in split(event.director, ",") |
@@ -122,19 +97,18 @@ services:
           foreach (x IN CASE WHEN event.rating IS NOT NULL THEN [1] ELSE [] END |
             merge(r:Rated{Name: event.rating})
             merge(r)<-[:RATED]-(show));
-
       NEO4J_kafka_schema_registry_url: 'http://schema_registry:8081'
       NEO4J_dbms_memory_heap_initial__size: '5g'
       NEO4J_dbms_memory_heap_max__size: '5g'
       NEO4J_dbms_memory_pagecache_size: '7g'
       NEO4J_apoc_initializer_neo4j_1: >
-       create constraint MovieTitleKey if not exists
+       create constraint MovieTitleAndRelYearKey if not exists
         on (n:Movie)
-        assert (n.Title) is node key
+        assert (n.Title, n.ReleaseYear) is node key
       NEO4J_apoc_initializer_neo4j_2: >
-        create constraint TvTitleKey if not exists
+        create constraint TvTitleAndRelYearKey if not exists
          on (n:Tv)
-         assert (n.Title) is node key
+         assert (n.Title, n.ReleaseYear) is node key
       NEO4J_apoc_initializer_neo4j_3: >
         create constraint DirectorNameKey if not exists
           on (n:Director)
