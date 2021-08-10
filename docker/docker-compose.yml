@@ -12,6 +12,7 @@ services:
       - "${NEO4J_BOLT_PORT}:${NEO4J_BOLT_PORT}"
     volumes:
       - ./neo4j/plugins:/plugins
+      - ./neo4j/conf:/conf
     environment:
       NEO4J_AUTH: "${NEO4J_USER}/${NEO4J_PASS}"
       NEO4J_kafka_bootstrap_servers: "broker:${BROKER_PORT_EXPOSED}"
@@ -29,38 +30,6 @@ services:
       NEO4J_dbms_memory_heap_initial__size: '5g'
       NEO4J_dbms_memory_heap_max__size: '5g'
       NEO4J_dbms_memory_pagecache_size: '7g'
-      NEO4J_apoc_initializer_neo4j_1: >
-       create constraint MovieTitleAndRelYearKey if not exists
-        on (n:Movie)
-        assert (n.Title, n.ReleaseYear) is node key
-      NEO4J_apoc_initializer_neo4j_2: >
-        create constraint TvTitleAndRelYearKey if not exists
-         on (n:Tv)
-         assert (n.Title, n.ReleaseYear) is node key
-      NEO4J_apoc_initializer_neo4j_3: >
-        create constraint DirectorNameKey if not exists
-          on (n:Director)
-          assert (n.Name) is node key
-      NEO4J_apoc_initializer_neo4j_4: >
-        create constraint ActorNameKey if not exists
-          on (n:Actor)
-          assert (n.Name) is node key
-      NEO4J_apoc_initializer_neo4j_5: >
-        create constraint CountryNameKey if not exists
-          on (n:Country)
-          assert (n.Name) is node key
-      NEO4J_apoc_initializer_neo4j_6: >
-        create constraint RatedNameKey if not exists
-          on (n:Rated)
-          assert (n.Name) is node key
-      NEO4J_apoc_initializer_neo4j_7: >
-        create index MovieTitleIndex
-          for (n:Movie)
-          on (n.Title)
-      NEO4J_apoc_initializer_neo4j_8: >
-        create index DirectorNameIndex
-          for (n:Director)
-          on (n.Name)
       NEO4J_metrics_jmx_enabled: 'true'
 
   zookeeper:
