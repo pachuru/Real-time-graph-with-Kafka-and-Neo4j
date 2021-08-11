@@ -2,6 +2,12 @@
 
 ## Introduction
 
+In the current days is not unusual to find more and more companies handling large volumes of data through high-performance data pipelines and performing data analytics on them. Kafka is one of the most well known _Message broker_ out there, it's an open source solution developed by the _Apache Software Foundation_ that's already being used by more than _80% of all Fortune 100 companies_.
+
+At the same time, the usage of graphs to infer knowledge from large databases is also rising, among the proposed tools for graph database management systems _Neo4j_ is one of the most well-known.
+
+The purpose of this article is to combine both technologies and explain how to setup a _graph streaming platform_ using _Kafka_ and _Neo4j_.
+
 ## Neo4j Streams and Kafka Integration
 
 *Neo4j Streams* can run as a _Neo4j plugin_ or a _Kafka-Connect plugin_, in this article we'll work within the first approach. When using the _Neo4j plugin_ there's three ways in which records can be published or consumed:
