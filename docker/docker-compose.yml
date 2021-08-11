@@ -21,12 +21,12 @@ services:
       NEO4J_kafka_key_deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
       NEO4J_kafka_value_deserializer: "io.confluent.kafka.serializers.KafkaAvroDeserializer"
       NEO4J_kafka_max_poll_records: 500
-      NEO4J_dbms_logs_debug_level: DEBUG
       NEO4J_streams_source_enabled: "false"
       NEO4J_streams_sink_enabled: "true"
       NEO4J_streams_sink_topic_cypher_netflix-movies: ${ADD_STREAM_DATA_QRY}
       NEO4J_streams_sink_topic_cypher_tmdb-movies: ${ADD_STREAM_DATA_QRY}
       NEO4J_kafka_schema_registry_url: "http://schema_registry:${SCHEMA_REGISTRY_PORT}"
+      NEO4J_dbms_logs_debug_level: DEBUG
       NEO4J_dbms_memory_heap_initial__size: '5g'
       NEO4J_dbms_memory_heap_max__size: '5g'
       NEO4J_dbms_memory_pagecache_size: '7g'
