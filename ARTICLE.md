@@ -162,7 +162,7 @@ There's a few things that should be configured in every _Neo4j_ docker instance 
 
    As it can be seen the `--docker` flag has been used and so we get as output the name of the variables to be specified when using docker.
 
-   ### Plugins
+### Plugins
 
 To work the Kafka streams we need to use the _Neo4j streams_ plugin, also we'll make use of the well known _APOC_ latter on.
 
